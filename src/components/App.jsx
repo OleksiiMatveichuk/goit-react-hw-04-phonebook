@@ -46,8 +46,8 @@ export class App extends Component {
     });
   };
 
-  handleFilerChange = ev => {
-    const { value } = ev.target;
+  handleFilerChange = e => {
+    const { value } = e.target;
     this.setState({ filter: value });
   };
 
