@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ContactForm } from './ContactForm';
 import { Filter } from './Filter';
@@ -7,27 +7,35 @@ import { nanoid } from 'nanoid';
 
 const KEY = 'Phonebook';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+export const App = () => {
+  // state = {
+  //   contacts: [],
+  //   filter: '',
+  // };
 
-  componentDidMount() {
-    const locStor = localStorage.getItem(KEY);
-    if (locStor) {
-      this.setState({ contacts: JSON.parse(locStor) });
-    }
-  }
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem(KEY)) || []
+  );
+  const [filter, setFilter] = useState('');
 
-  componentDidUpdate(_, prev) {
-    if (prev.contacts !== this.state.contacts) {
-      localStorage.setItem(KEY, JSON.stringify(this.state.contacts));
-    }
-  }
+  // componentDidMount() {
+  //   const locStor = localStorage.getItem(KEY);
+  //   if (locStor) {
+  //     this.setState({ contacts: JSON.parse(locStor) });
+  //   }
+  // }
 
-  handleSubmit = ({ name, number }) => {
-    const { contacts } = this.state;
+  // componentDidUpdate(_, prev) {
+  //   if (prev.contacts !== this.state.contacts) {
+  //     localStorage.setItem(KEY, JSON.stringify(this.state.contacts));
+  //   }
+  // }
+
+  useEffect(() => {
+    localStorage.setItem(KEY, JSON.stringify(contacts));
+  }, [contacts]);
+
+  const handleSubmit = (name, number) => {
     const newItem = { id: nanoid(), name, number };
     const isExist = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
@@ -36,51 +44,42 @@ export class App extends Component {
       alert('Contact already exist');
       return;
     }
-    this.setState(prev => ({ contacts: [...prev.contacts, newItem] }));
+    setContacts(prev => [...prev, newItem]);
   };
 
-  handleDelete = id => {
-    const { contacts } = this.state;
-    this.setState({
-      contacts: contacts.filter(contact => contact.id !== id),
-    });
+  const handleDelete = id => {
+    setContacts(contacts.filter(contact => contact.id !== id));
   };
 
-  handleFilerChange = e => {
+  const handleFilerChange = e => {
     const { value } = e.target;
-    this.setState({ filter: value });
+    setFilter(value);
   };
 
-  handleFilter = () => {
-    const { filter, contacts } = this.state;
+  const handleFilter = () => {
     const filteredContacts = contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
     return filteredContacts;
   };
 
-  render() {
-    const resultFilter = this.handleFilter();
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: 20,
-          color: '#010101',
-        }}
-      >
-        <h1>Phonebook</h1>
-        <ContactForm submit={this.handleSubmit} />
-        <h2>Contacts</h2>
-        <Filter
-          filterChange={this.handleFilerChange}
-          value={this.state.filter}
-        />
-        <ContactList array={resultFilter} clbDelete={this.handleDelete} />
-      </div>
-    );
-  }
-}
+  const resultFilter = handleFilter();
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 20,
+        color: '#010101',
+      }}
+    >
+      <h1>Phonebook</h1>
+      <ContactForm submit={handleSubmit} />
+      <h2>Contacts</h2>
+      <Filter filterChange={handleFilerChange} value={filter} />
+      <ContactList array={resultFilter} clbDelete={handleDelete} />
+    </div>
+  );
+};
