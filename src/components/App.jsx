@@ -8,28 +8,10 @@ import { nanoid } from 'nanoid';
 const KEY = 'Phonebook';
 
 export const App = () => {
-  // state = {
-  //   contacts: [],
-  //   filter: '',
-  // };
-
   const [contacts, setContacts] = useState(
     () => JSON.parse(localStorage.getItem(KEY)) || []
   );
   const [filter, setFilter] = useState('');
-
-  // componentDidMount() {
-  //   const locStor = localStorage.getItem(KEY);
-  //   if (locStor) {
-  //     this.setState({ contacts: JSON.parse(locStor) });
-  //   }
-  // }
-
-  // componentDidUpdate(_, prev) {
-  //   if (prev.contacts !== this.state.contacts) {
-  //     localStorage.setItem(KEY, JSON.stringify(this.state.contacts));
-  //   }
-  // }
 
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(contacts));

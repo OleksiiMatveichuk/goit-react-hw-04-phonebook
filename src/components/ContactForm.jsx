@@ -3,17 +3,12 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { useState } from 'react';
 
 export const ContactForm = ({ submit }) => {
-  // state = {
-  //   name: '',
-  //   number: '',
-  // };
-
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const handleChange = e => {
     const { name, value } = e.target;
-    // this.setState({ [name]: value });
+
     switch (name) {
       case 'name':
         setName(value);
@@ -30,7 +25,7 @@ export const ContactForm = ({ submit }) => {
   const onSubmit = e => {
     e.preventDefault();
     submit(name, number);
-    // this.setState({ name: '', number: '' });
+
     setName('');
     setNumber('');
   };
